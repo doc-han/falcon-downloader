@@ -16,6 +16,8 @@
     "electron": "^5.0.2"
   },
   "dependencies": {
-    "jquery": "^3.4.1"
+    "jquery": "^3.4.1",
+    "mt-files-downloader": "^0.2.5",
+    "uid-generator": "^1.0.0"
   }
 }
