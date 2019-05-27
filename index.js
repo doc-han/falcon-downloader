@@ -15,6 +15,7 @@ function createYTWindow () {
     height: 500,
     parent: mainWindow,
     title: 'YouTube',
+    icon: __dirname + '/lib/public/fonts/spaceship.png',
     webPreferences: {
       nodeIntegration: true
     }
@@ -33,6 +34,7 @@ function createWindow () {
     width: 800,
     height: 600,
     show: false,
+    icon: __dirname + '/lib/public/fonts/spaceship.png',
     webPreferences: {
       nodeIntegration: true
     }
@@ -48,7 +50,7 @@ function createWindow () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    if(ytWindow) ytWindow.close();
+    if(ytWindow!=null) ytWindow.close();
     mainWindow = null;
   })
 }
