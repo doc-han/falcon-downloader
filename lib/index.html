@@ -46,21 +46,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>The begining of all</td>
-                  <td><div class="ui indicating small progress" data-percent="70" >
-                      <div class="bar" style="width: 70%">
-                      </div>
-                      <div class="label">70%</div>
-                    </div></td>
-                  <td>24kb/s</td>
-                  <td>5min</td>
-                  <td><div class="ui icon buttons">
-                      <button class="ui button"><i class="play icon"></i></button>
-                      <button class="ui button"><i class="stop icon"></i></button>
-                      <button class="ui button"><i class="trash icon"></i></button>
-                    </div></td>
-                </tr>
+                <!-- List downloads here -->
               </tbody>
             </table>
 
@@ -72,7 +58,7 @@
       </div>
       <div class="content">
           <div class="ui fluid icon input">
-                  <input type="text" placeholder="link here..." >
+                  <input type="url" placeholder="link here..." class="dl-link">
                   <i class="linkify icon"></i>
           </div>
       </div>
@@ -80,7 +66,7 @@
         <div class="ui black deny button">
           Cancel
         </div>
-        <div class="ui positive right labeled icon button">
+        <div class="ui positive right labeled icon button dl-btn">
           Download
           <i class="checkmark icon"></i>
         </div>
@@ -90,6 +76,7 @@
 
               <script>
               const $ = jQuery = require('jquery');
+              const download = require('./public/js/downloader.js');
               </script>
               <script src="public/js/semantic.min.js"></script>
               <script src="public/js/app.js"></script>
