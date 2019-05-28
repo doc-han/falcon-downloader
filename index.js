@@ -1,12 +1,24 @@
 // Modules to control application life and create native browser window
-const {ipcMain, app, BrowserWindow} = require('electron')
+const {ipcMain, app, BrowserWindow, Menu} = require('electron')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow,ytWindow;
+let ytUrl = null;
+
+let ytMenu = [
+  {
+    label: 'Download Video',
+    click(){
+      console.log(ytUrl);
+    }
+  }
+]
 
 ipcMain.on('show-youtube',function(event,args){
   createYTWindow();
+  const ytMen = Menu.buildFromTemplate(ytMenu);
+  ytWindow.setMenu(ytMen);
 })
 
 function createYTWindow () {
@@ -26,12 +38,17 @@ function createYTWindow () {
   ytWindow.on('closed', function () {
     mainWindow = null
   });
+
+  ytWindow.webContents.on('did-navigate-in-page', function(event,url,isMainFrame,frameId,routeId){
+    ytUrl = url;
+  });
+
 }
 
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
+    width: 1000,
     height: 600,
     show: false,
     icon: __dirname + '/lib/public/fonts/spaceship.png',
@@ -42,7 +59,7 @@ function createWindow () {
 
   // and load the index.html of the app.
   mainWindow.loadFile('./lib/index.html');
-
+ 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
@@ -53,13 +70,35 @@ function createWindow () {
   })
 }
 
+let template = [{
+  label: 'File',
+  submenu: [{
+  label: 'Download Link',
+  click(){
+    mainWindow.webContents.send('show-modal');
+  }
+  },{
+    label: 'Exit'
+  }]
+ }, {
+  label: 'About',
+  submenu: [{
+  label: 'Version'
+  }, {
+  label: 'Developers'
+  }]
+}];
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', function(){
   createWindow();
   mainWindow.once('ready-to-show', () => {
+    const menu = Menu.buildFromTemplate(template);
+  mainWindow.setMenu(menu);
     mainWindow.show()
+    
   });
 })
 
@@ -75,5 +114,3 @@ app.on('activate', function () {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow()
 })
-
-
