@@ -6,21 +6,8 @@ const {ipcMain, app, BrowserWindow, Menu} = require('electron')
 let mainWindow,ytWindow;
 let ytUrl = null;
 
-let ytMenu = [
-  {
-    label: 'Download Video',
-    click(){
-      console.log(ytUrl);
-    }
-  }
-]
 
-ipcMain.on('show-youtube',function(event,args){
-  createYTWindow();
-  const ytMen = Menu.buildFromTemplate(ytMenu);
-  ytWindow.setMenu(ytMen);
-})
-
+//browser window functions
 function createYTWindow () {
   ytWindow = new BrowserWindow({
     width: 900,
@@ -36,7 +23,7 @@ function createYTWindow () {
   ytWindow.loadURL('https://youtube.com');
 
   ytWindow.on('closed', function () {
-    mainWindow = null
+    ytWindow = null
   });
 
   ytWindow.webContents.on('did-navigate-in-page', function(event,url,isMainFrame,frameId,routeId){
@@ -59,7 +46,6 @@ function createWindow () {
 
   // and load the index.html of the app.
   mainWindow.loadFile('./lib/index.html');
- 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
@@ -70,6 +56,14 @@ function createWindow () {
   })
 }
 
+let ytMenu = [
+  {
+    label: 'Download Video',
+    click(){
+      if(ytUrl!=null) mainWindow.webContents.send('download-youtube',ytUrl);
+    }
+  }
+];
 let template = [{
   label: 'File',
   submenu: [{
@@ -89,13 +83,22 @@ let template = [{
   }]
 }];
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+//Listening for events from renderer
+ipcMain.on('show-youtube',function(event,args){
+  if(ytWindow==null){
+    createYTWindow();
+  }
+  const ytMen = Menu.buildFromTemplate(ytMenu);
+  ytWindow.setMenu(ytMen);
+})
+
+//application state event listeners
+
+// Create window on app ready
 app.on('ready', function(){
   createWindow();
   mainWindow.once('ready-to-show', () => {
-    const menu = Menu.buildFromTemplate(template);
+  const menu = Menu.buildFromTemplate(template);
   mainWindow.setMenu(menu);
     mainWindow.show()
     
